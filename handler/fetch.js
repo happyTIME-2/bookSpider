@@ -18,7 +18,7 @@ async function fetch(url, options = {}) {
   try {
     const res = await axios(requestOption);
 
-    return res
+    return res;
   } catch (err) {
     throw new Error(`axios: ${err.message}`);
   }
