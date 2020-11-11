@@ -60,7 +60,6 @@ router.post('/crawler/chapter', async (req, res) => {
     let index = 0;
 
     index = $($('#list dl dt')[1]).index();
-    console.log(index);
 
     $('#list dl dd a').each((i, el) => {
       let con = $(el).text();
@@ -84,7 +83,26 @@ router.post('/crawler/chapter', async (req, res) => {
 
     return res.json(result);
   } catch (e) {
-    throw new Error(`crawler api: ${e.message}`)
+    throw new Error(`chapter api: ${e.message}`)
+  }
+})
+
+router.post('/crawler/content', async (req, res) => {
+  const { url,options } = req.body;
+
+  try {
+    const result = await crawler(url, options);
+    const $ = cheerio.load(result.html);
+
+    const content = $('#content').text().trim();
+
+    result.content = content;
+
+    delete result.html;
+
+    return res.json(result);
+  } catch (e) {
+    throw new Error(`content api: ${e.message}`)
   }
 })
 
