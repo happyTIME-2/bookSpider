@@ -2,7 +2,9 @@ const { defaultConfiguration } = require("./app");
 
 const config = {};
 
-config.endpoint = 'https://www.xyxs8.com/';
+config.source = 'https://www.biquge5200.cc';
+config.endpoint = 'http://www.xgbxg.com';
+config.api = 'http://www.xgbxg.com/home/index/updatecache';
 
 config.device = {
   mobile: {

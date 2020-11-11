@@ -8,7 +8,6 @@ async function fetch(url, options = {}) {
     followRedirect: false,
     strictSSL: false,
     validateStatus: status => status >= 200 && status <= 404,
-    maxRedirects: 0,
     headers: {
       'User-Agent': config.device.mobile.userAgent,
     },

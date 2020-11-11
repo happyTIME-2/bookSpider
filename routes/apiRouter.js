@@ -2,7 +2,6 @@ const express = require('express');
 const crawler = require('../handler/crawler');
 const config = require('../config');
 const cheerio = require('cheerio');
-const jsonp = require('jsonp');
 
 const router = express.Router();
 
@@ -44,24 +43,46 @@ router.post('/crawler/chapter', async (req, res) => {
 
     const $ = cheerio.load(result.html);
 
-    const idPattarn = /(var bookid \= \')(\d+)(\')/;
-    const hashPattarn = /(hash \= \')([a-fA-F\d]{16})(\')/;
+    const idPattarn = /(var bookid \= \'|\")(\d+)(\'|\")/;
+    const titlePattarn = /(var booktitle \= \'|\")([\u4e00-\u9fa5]+)(\'|\")/;
+    const novelIdPattarn = /(var novelId \= \'|\")(\d+)(\'|\")/;
+   // const hashPattarn = /(hash \= \'|\")([a-fA-F\d]{16})(\'|\")/;
 
-    const bookId = result.html.match(idPattarn)[2];
-    const hash = result.html.match(hashPattarn)[2];
+    const bookId = result.html.match(idPattarn).length ? result.html.match(idPattarn)[2] : null;
+    const bookTitle = result.html.match(titlePattarn).length ? result.html.match(titlePattarn)[2] : null;
+    const novelId = result.html.match(novelIdPattarn).length ? result.html.match(novelIdPattarn)[2] : null;
+   // const hash = result.html.match(hashPattarn).length ? result.html.match(hashPattarn)[2] : null;
 
-    result.bookId = bookId;
-    result.hash = hash;
+    result.args = { bookId, bookTitle, novelId };
 
-   // const chapters = await fetch(`https://www.xyxs8.com/home/index/updatecache?id=${bookId}&hash=${hash}`);
-   const apiUrl = `https://www.xyxs8.com/home/index/updatecache?id=${bookId}&hash=${hash}`;
-   const chapters = await fetchJsonP('https://www.xyxs8.com/home/index/updatecache', {bookId, hash});
+    let chapters = [];
+    let newList = [];
+    let index = 0;
 
-   result.chapters = chapters;
+    index = $($('#list dl dt')[1]).index();
+    console.log(index);
+
+    $('#list dl dd a').each((i, el) => {
+      let con = $(el).text();
+      let href = $(el).attr('href') || '';
+
+      if (i < index - 1) {
+        newList.push({
+          [con] : href
+        })
+      } else {
+        chapters.push({
+          [con] : href
+        })
+      }
+    });
+
+    result.newList = newList;
+    result.chapters = chapters;
+
+    delete result.html;
 
     return res.json(result);
-
-    //return chapters;
   } catch (e) {
     throw new Error(`crawler api: ${e.message}`)
   }
