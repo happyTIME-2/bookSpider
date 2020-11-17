@@ -1,6 +1,6 @@
 const axios = require('axios').default;
 
-const config = require('../config');
+const { config } = require('../config');
 
 async function fetch(url, options = {}) {
   const requestOption = {

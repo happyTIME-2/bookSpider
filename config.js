@@ -17,4 +17,12 @@ config.device = {
   }
 }
 
-module.exports = config;
+const dbConfig = {
+  HOST: "localhost",
+  USER: "root",
+  PASSWORD: "",
+  DB: "book",
+}
+
+
+module.exports = { config, dbConfig };
