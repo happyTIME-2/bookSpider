@@ -1,4 +1,5 @@
 const sql = require('./db');
+const util = require('util');
 
 const Book = function(book) {
   this.bookId = book.bookId;
