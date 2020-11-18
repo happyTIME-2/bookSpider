@@ -1,6 +1,6 @@
 const express = require('express');
 const { config } = require('../config');
-const { crawlerHtml, crawlerChapter, crawlerContent } = require('../handler/baseCrawler');
+const { search, crawlerHtml, crawlerChapter, crawlerContent } = require('../handler/baseCrawler');
 
 const router = express.Router();
 
@@ -22,6 +22,23 @@ async function fetchJsonP(url, options = {}) {
 router.get('/', (req, res) => {
   res.send(config.endpoint);
 })
+
+router.get('/search', async (req, res) => {
+  const { url, options } = req.body;
+  let { keyword } =  options;
+
+  keyword = encodeURIComponent(keyword);
+
+  const reqUrl = `${url}${keyword}`;
+
+  try {
+    const result = await search(reqUrl, {});
+
+    return res.json(result);
+  } catch (e) {
+    throw new Error(`crawler api: ${e.message}`)
+  }
+});
 
 router.post('/crawler', async (req, res) => {
   const { url,options } = req.body;

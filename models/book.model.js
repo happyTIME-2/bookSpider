@@ -1,7 +1,7 @@
-const sql = require('./db');
 const Model = require('./model');
 
-class Book extends Model {
+class Book extends Model 
+{
   constructor(book) {
     super();
     this.bookId = book.bookId;

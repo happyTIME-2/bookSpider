@@ -1,7 +1,40 @@
 const crawler = require('./crawler');
 const cheerio = require('cheerio');
 const Book = require('../models/book.model');
-const { use } = require('../routes/apiRouter');
+
+async function search(url, options) {
+  try {
+    const result = await crawler(url, options);
+
+    const $ = cheerio.load(result.html);
+
+    let search = [];
+    const pattarn = /(\_)(\d+)(\/)/;
+
+    $('table tr').each((i, el) => {
+      const td = $(el).find('td');
+      const name = $(td[0]).children('a').text();
+      const url = $(td[0]).children('a').attr('href');
+      const author = $(td[2]).text();
+      
+      if(name === "") {
+        return;
+      }
+
+      const bookId = url.match(pattarn)[2];
+
+      search.push({ name, url, author, bookId});
+    })
+
+    result.list = search;
+
+    delete result.html;
+
+    return result;
+  } catch (e) {
+    throw new Error(`crawler api: ${e.message}`)
+  }
+}
 
 async function crawlerHtml(url, options) {
   try {
@@ -99,6 +132,7 @@ async function crawlerContent(url, options) {
 }
 
 module.exports = {
+  search,
   crawlerHtml,
   crawlerChapter,
   crawlerContent
