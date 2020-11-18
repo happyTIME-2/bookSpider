@@ -60,14 +60,12 @@ async function crawlerChapter(url, options) {
       url,
     });
     
-    let kk = await Book.findByKey('bookId', bookId);
-
-    console.log(kk);
+    let kk = await newBook.findByKey('bookId', bookId);
 
     if (kk.msg && kk.msg === 'book not_found') {
       try {
-        const res = await Book.create(newBook);
-        console.log(res);
+        const res = await newBook.create(newBook);
+        console.log('create res:', res);
       } catch (e) {
         throw new Error(e);
       }
