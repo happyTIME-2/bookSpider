@@ -25,4 +25,10 @@ const dbConfig = {
 }
 
 
-module.exports = { config, dbConfig };
+const RedisConfig = {
+  host: '9.134.39.171',
+  port: 6380,
+  password: '9482110!@#'
+}
+
+module.exports = { config, dbConfig, RedisConfig };
